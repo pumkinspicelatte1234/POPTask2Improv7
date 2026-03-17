@@ -58,9 +58,42 @@ st.write(f"**Median Score:** {median}")
 st.write(f"**Mean Score:** {mean}")
 
 
-st.subheader("Score Distribution")
+st.subheader("Statistical Analysis (5 Participants)")
 
-st.bar_chart(data.set_index("Name")["Score"])
+scores5 = first5["Score"]
+
+# Calculations
+total_marks = scores5.sum()
+average = np.mean(scores5)
+median = np.median(scores5)
+mean = np.mean(scores5)
+
+# Display values
+st.write(f"**Total Marks:** {total_marks}")
+st.write(f"**Average:** {average}")
+st.write(f"**Median:** {median}")
+st.write(f"**Mean:** {mean}")
+
+
+# 1. Total Marks Graph
+st.subheader("Total Marks Graph")
+total_df = pd.DataFrame({"Total Marks": [total_marks]})
+st.bar_chart(total_df)
+
+# 2. Average Graph
+st.subheader("Average Score Graph")
+avg_df = pd.DataFrame({"Average": [average]})
+st.bar_chart(avg_df)
+
+# 3. Median Graph
+st.subheader("Median Score Graph")
+median_df = pd.DataFrame({"Median": [median]})
+st.bar_chart(median_df)
+
+# 4. Mean Graph
+st.subheader("Mean Score Graph")
+mean_df = pd.DataFrame({"Mean": [mean]})
+st.bar_chart(mean_df)
 
 st.subheader("Total Marks Analysis")
 
@@ -71,7 +104,6 @@ st.write(f"Q1 Total: {data['Q1'].sum()}")
 st.write(f"Q2 Total: {data['Q2'].sum()}")
 st.write(f"Q3 Total: {data['Q3'].sum()}")
 st.write(f"Q4 Total: {data['Q4'].sum()}")
-
 
 if st.button("Quit"):
     st.stop()
