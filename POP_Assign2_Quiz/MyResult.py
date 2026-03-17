@@ -25,11 +25,11 @@ data = pd.read_csv(
 
 # Quiz Matrix
 
-st.subheader("Quiz Matrix Results (First 5 Participants)")
+st.subheader("Quiz Matrix Results")
 
 first5 = data.head(5)
 
-st.write("### Participant Results")
+st.write("Participant Results")
 st.dataframe(first5)
 
 # Individual Result
@@ -66,7 +66,7 @@ st.subheader("Total Marks Analysis")
 
 st.write("**Total Marks (All Participants):**", scores.sum())
 
-st.write("**Total Marks Per Question:**")
+st.write("**Total Marks:**")
 st.write(f"Q1 Total: {data['Q1'].sum()}")
 st.write(f"Q2 Total: {data['Q2'].sum()}")
 st.write(f"Q3 Total: {data['Q3'].sum()}")
