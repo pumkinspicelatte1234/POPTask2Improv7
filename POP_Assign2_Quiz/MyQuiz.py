@@ -1,3 +1,4 @@
+# MyQuiz Program Code
 import streamlit as st
 import pandas as pd
 import os
@@ -9,7 +10,7 @@ QUESTION_FILE = os.path.join(BASE_DIR, "Questions.txt")
 ANSWER_FILE = os.path.join(BASE_DIR, "Answers.txt")
 
 
-# Load questions
+# MyQuiz Questions Program Code
 def load_questions():
     questions = []
 
@@ -40,14 +41,14 @@ def load_questions():
     return questions
 
 
-# MAIN
-st.title("🍽️ Malaysian Culinary Food Quiz")
+# MyQuiz MAIN Operating Program
+st.title("Malaysian Culinary Food Quiz")
 
 name = st.text_input("Enter your name")
 
 questions = load_questions()
 
-# Session state
+
 if "q_index" not in st.session_state:
     st.session_state.q_index = 0
     st.session_state.answers = [None] * len(questions)
@@ -56,9 +57,9 @@ if "q_index" not in st.session_state:
 if name == "":
     st.stop()
 
-# -------------------------
-# QUESTION PAGE
-# -------------------------
+
+# Questions Pages
+
 if not st.session_state.submitted:
 
     q_index = st.session_state.q_index
@@ -69,12 +70,11 @@ if not st.session_state.submitted:
 
     st.write(q["question"])
 
-    # Show image if needed
+    # Show images
     if q["type"] == "B":
         if os.path.exists(q["image"]):
             st.image(Image.open(q["image"]), width=300)
 
-    # RADIO with NO default selection
     selected = st.radio(
         "Choose your answer:",
         q["options"],
@@ -86,18 +86,14 @@ if not st.session_state.submitted:
     if selected is not None:
         st.session_state.answers[q_index] = q["options"].index(selected) + 1
 
-    # Navigation buttons
     col1, col2 = st.columns(2)
 
-    # Previous button
     with col1:
         if st.button("Previous") and q_index > 0:
             st.session_state.q_index -= 1
 
-    # Next / Submit logic
     with col2:
 
-        # LAST QUESTION → SHOW SUBMIT
         if q_index == len(questions) - 1:
 
             if st.session_state.answers[q_index] is not None:
@@ -106,7 +102,6 @@ if not st.session_state.submitted:
             else:
                 st.warning("Please select an answer before submitting.")
 
-        # NORMAL QUESTIONS → SHOW NEXT
         else:
             if st.session_state.answers[q_index] is not None:
                 if st.button("Next"):
@@ -114,9 +109,8 @@ if not st.session_state.submitted:
             else:
                 st.warning("Please select an answer before proceeding.")
 
-# -------------------------
-# RESULT PAGE
-# -------------------------
+
+# Result Page
 else:
 
     score = 0
@@ -150,6 +144,6 @@ else:
     row = [name] + st.session_state.answers + [score]
     pd.DataFrame([row]).to_csv(ANSWER_FILE, mode="a", header=False, index=False)
 
-    # Quit button (ONLY after submit)
+    # Quit button
     if st.button("Quit"):
         st.stop()
