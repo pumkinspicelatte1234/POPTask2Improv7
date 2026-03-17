@@ -127,10 +127,10 @@ else:
             f"Q{i+1}",
             user,
             correct,
-            "✔ Correct" if user == correct else "✘ Wrong"
+            "Correct" if user == correct else "Wrong"
         ])
 
-    st.subheader(f"🎉 {name}, your score: {score}/{len(questions)}")
+    st.subheader(f"{name}, your score: {score}/{len(questions)}")
 
     df = pd.DataFrame(
         results,
