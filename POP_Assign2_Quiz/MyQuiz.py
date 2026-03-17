@@ -47,7 +47,7 @@ name = st.text_input("Enter your name")
 
 questions = load_questions()
 
-# Session state setup
+# Session state
 if "q_index" not in st.session_state:
     st.session_state.q_index = 0
     st.session_state.answers = [None] * len(questions)
@@ -74,46 +74,45 @@ if not st.session_state.submitted:
         if os.path.exists(q["image"]):
             st.image(Image.open(q["image"]), width=300)
 
-    # Options with placeholder
-    options = ["-- Select an answer --"] + q["options"]
-
-    # UNIQUE KEY per question (IMPORTANT FIX)
+    # RADIO with NO default selection
     selected = st.radio(
         "Choose your answer:",
-        options,
-        index=0,
+        q["options"],
+        index=None,
         key=f"q_{q_index}"
     )
 
-    # Save answer
-    if selected == "-- Select an answer --":
-        st.session_state.answers[q_index] = None
-    else:
-        st.session_state.answers[q_index] = options.index(selected)
+    # Save answer only if selected
+    if selected is not None:
+        st.session_state.answers[q_index] = q["options"].index(selected) + 1
 
-    # Progress bar
-    st.progress((q_index + 1) / len(questions))
+    # Navigation buttons
+    col1, col2 = st.columns(2)
 
-    # Check all answered
-    all_answered = all(ans is not None for ans in st.session_state.answers)
-
-    # Navigation
-    col1, col2, col3 = st.columns(3)
-
+    # Previous button
     with col1:
         if st.button("Previous") and q_index > 0:
             st.session_state.q_index -= 1
 
+    # Next / Submit logic
     with col2:
-        if st.button("Next") and q_index < len(questions) - 1:
-            st.session_state.q_index += 1
 
-    with col3:
-        if all_answered:
-            if st.button("Submit"):
-                st.session_state.submitted = True
+        # LAST QUESTION → SHOW SUBMIT
+        if q_index == len(questions) - 1:
+
+            if st.session_state.answers[q_index] is not None:
+                if st.button("Submit"):
+                    st.session_state.submitted = True
+            else:
+                st.warning("Please select an answer before submitting.")
+
+        # NORMAL QUESTIONS → SHOW NEXT
         else:
-            st.warning("Please answer all questions first.")
+            if st.session_state.answers[q_index] is not None:
+                if st.button("Next"):
+                    st.session_state.q_index += 1
+            else:
+                st.warning("Please select an answer before proceeding.")
 
 # -------------------------
 # RESULT PAGE
@@ -151,6 +150,6 @@ else:
     row = [name] + st.session_state.answers + [score]
     pd.DataFrame([row]).to_csv(ANSWER_FILE, mode="a", header=False, index=False)
 
-    # Quit button
+    # Quit button (ONLY after submit)
     if st.button("Quit"):
         st.stop()
