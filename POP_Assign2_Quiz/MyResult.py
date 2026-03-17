@@ -22,88 +22,72 @@ data = pd.read_csv(
     names=["Name", "Q1", "Q2", "Q3", "Q4", "Score"]
 )
 
+# Check if empty
+if data.empty:
+    st.warning("No participant data found.")
+    st.stop()
 
-# Quiz Matrix
-
-st.subheader("Quiz Matrix Results")
+# -----------------------------
+# QUIZ MATRIX (5 PARTICIPANTS)
+# -----------------------------
+st.subheader("Quiz Matrix Results (5 Participants)")
 
 first5 = data.head(5)
 
-st.write("Participant Results")
+st.write("Participant Results Table")
 st.dataframe(first5)
 
-# Individual Result
+# Individual display
 for i, row in first5.iterrows():
     st.write(f"**Name:** {row['Name']}")
     st.write(f"**Total Score:** {row['Score']}")
     st.write("---")
 
-st.subheader("Statistical Analysis")
+# -----------------------------
+# PARTICIPANT GRAPH (IMPORTANT)
+# -----------------------------
+st.subheader("Participants Scores (5 Participants)")
+st.bar_chart(first5.set_index("Name")["Score"])
 
-scores = data["Score"]
-
-# Calculations
-average = np.mean(scores)
-median = np.median(scores)
-mean = np.mean(scores)
-highest = np.max(scores)
-lowest = np.min(scores)
-
-# Display status
-st.write(f"**Total Participants:** {len(data)}")
-st.write(f"**Highest Score:** {highest}")
-st.write(f"**Lowest Score:** {lowest}")
-st.write(f"**Average Score:** {average}")
-st.write(f"**Median Score:** {median}")
-st.write(f"**Mean Score:** {mean}")
-
-
+# -----------------------------
+# STATISTICAL ANALYSIS (5 ONLY)
+# -----------------------------
 st.subheader("Statistical Analysis (5 Participants)")
 
 scores5 = first5["Score"]
 
-# Calculations
 total_marks = scores5.sum()
 average = np.mean(scores5)
 median = np.median(scores5)
 mean = np.mean(scores5)
 
-# Display values
 st.write(f"**Total Marks:** {total_marks}")
 st.write(f"**Average:** {average}")
 st.write(f"**Median:** {median}")
 st.write(f"**Mean:** {mean}")
 
+# -----------------------------
+# SEPARATE GRAPHS
+# -----------------------------
 
-# 1. Total Marks Graph
+# Total Marks Graph
 st.subheader("Total Marks Graph")
-total_df = pd.DataFrame({"Total Marks": [total_marks]})
-st.bar_chart(total_df)
+st.bar_chart(pd.DataFrame({"Total Marks": [total_marks]}))
 
-# 2. Average Graph
+# Average Graph
 st.subheader("Average Score Graph")
-avg_df = pd.DataFrame({"Average": [average]})
-st.bar_chart(avg_df)
+st.bar_chart(pd.DataFrame({"Average": [average]}))
 
-# 3. Median Graph
+# Median Graph
 st.subheader("Median Score Graph")
-median_df = pd.DataFrame({"Median": [median]})
-st.bar_chart(median_df)
+st.bar_chart(pd.DataFrame({"Median": [median]}))
 
-# 4. Mean Graph
+# Mean Graph
 st.subheader("Mean Score Graph")
-mean_df = pd.DataFrame({"Mean": [mean]})
-st.bar_chart(mean_df)
+st.bar_chart(pd.DataFrame({"Mean": [mean]}))
 
-st.subheader("Total Marks Analysis")
-
-st.write("**Total Marks (All Participants):**", scores.sum())
-
-st.write("**Total Marks:**")
-st.write(f"Q1 Total: {data['Q1'].sum()}")
-st.write(f"Q2 Total: {data['Q2'].sum()}")
-st.write(f"Q3 Total: {data['Q3'].sum()}")
-st.write(f"Q4 Total: {data['Q4'].sum()}")
-
+# -----------------------------
+# QUIT BUTTON
+# -----------------------------
 if st.button("Quit"):
     st.stop()
